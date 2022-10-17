@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-      LogIn!
+      Log-In!
     </div>
   
     <div class="card-body">
@@ -15,7 +15,8 @@
                    id="emailId"
                    type="text"
                    placeholder="Email (required)"
-                   formControlName="email">
+                   formControlName="email"
+                   [ngClass]="{'is-invalid': (loginForm.get('email')?.touched || loginForm.get('email')?.dirty) && !loginForm.get('email')?.valid}">
             <span class="invalid-feedback">
               <span *ngIf="loginForm.get('email')?.errors">Please enter a valid email</span>
             </span>
@@ -30,11 +31,18 @@
                      id="passwordId"
                      type="text"
                      placeholder="Password (required)"
-                     formControlName="password">
+                     formControlName="password"
+                     [ngClass]="{'is-invalid': (loginForm.get('password')?.touched || loginForm.get('password')?.dirty) && !loginForm.get('password')?.valid}">
+            <span class="invalid-feedback">
+              <span *ngIf="loginForm.get('password')?.errors">Please enter a valid password</span>
+            </span>
             </div>
           </div>
           <div>
             <button class="btn btn-primary" (click)="loginUser()">Submit</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-danger mt-5" (click)="logout()">Log out</button>
           </div>
       </form>
     </div>
