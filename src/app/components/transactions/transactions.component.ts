@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { IFilters } from 'src/app/interfaces/filters';
@@ -10,28 +10,35 @@ import { TransactionsService } from 'src/app/services/transactions.service';
   templateUrl: './transactions.component.html',
   styleUrls: ['./transactions.component.css']
 })
-export class TransactionsComponent implements OnInit, OnDestroy {
+export class TransactionsComponent implements OnInit, OnDestroy, OnChanges {
   public transactions: ITransaction[] = [];
   private subscription!: Subscription;
   columnsToDisplay = ['id', 'from_account_id', 'to_account_id', 'currency_name', 
   'amount', 'createdAt'];
   public showFilters: boolean = false;
   filtersForm!: FormGroup;
+  interval!: NodeJS.Timer;
 
-  constructor(private transactionsService: TransactionsService, private formBuilder: FormBuilder) { }
+  constructor(private transactionsService: TransactionsService, private formBuilder: FormBuilder) {   }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes['filters']);
+  }
   
   ngOnDestroy(): void {
     if(this.subscription){
       this.subscription.unsubscribe();
     }
+    clearInterval(this.interval);
   }
 
   ngOnInit(): void {
-    this.subscription = this.transactionsService.getTransactions().subscribe(
-      next => this.transactions = next.data,
-      error => this.handleError(error),
-    );
+    this.populateTable();
 
+    this.interval = setInterval(() => {
+      this.populateTable();
+    }, 60000);
+    
     this.filtersForm = this.formBuilder.group({
       from: null,
       to: null,
@@ -57,6 +64,9 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   setShowFilters(): void{
     this.showFilters = !this.showFilters;
+    if(!this.showFilters){
+      this.resetForm();
+    }
   }
 
   applyFilters(): void {
@@ -64,7 +74,6 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       const values : IFilters = this.filtersForm.value;
       if(values.from !== null){
         values.from = new Date(values.from).toISOString();
-        console.log(values.from);
       }
       if(values.to !== null){
         values.from = new Date(values.from).toISOString();;
@@ -79,15 +88,32 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   validateInputs(values: IFilters): void {
-    if(Number(values.from_account_id) < 1 || Number(values.to_account_id) < 1){
-      throw new Error("Account ids must be > 0");
+    if(values.from_account_id && Number(values.from_account_id) < 1){
+      throw new Error("Invalid from account id");
     }
-    if(Number(values.id) < 1){
-      throw new Error("id must be > 0");
+    if(values.to_account_id && Number(values.to_account_id) < 1){
+      throw new Error("Invalid to account id");
     }
-    if(Number(values.page) < 1 || Number(values.page_size) < 1){
-      throw new Error("Page and page size must be > 0");
+    if(values.id && Number(values.id) < 1){
+      throw new Error("Invalid id");
     }
+    if(values.page && Number(values.page) < 1){
+      throw new Error("Invalid page");
+    }
+    if(values.page_size && Number(values.page_size) < 1){
+      throw new Error("Invalid page size");
+    }
+    this.resetForm();
+  }
+
+  populateTable(): void {
+    this.subscription = this.transactionsService.getTransactions().subscribe(
+      next => this.transactions = next.data,
+      error => this.handleError(error),
+    );
+  }
+
+  resetForm(): void {
     this.filtersForm.reset();
   }
 }

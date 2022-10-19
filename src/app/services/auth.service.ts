@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ILoginResponse } from '../interfaces/loginResponse';
 import { Observable, tap } from 'rxjs';
 import { ILoginForm } from '../interfaces/loginForm';
@@ -18,8 +18,7 @@ export class AuthService {
   }
 
   login(credentials: ILoginForm): Observable<ILoginResponse> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<ILoginResponse>(this.loginUrl, credentials, { headers }).pipe(tap(response => {
+    return this.http.post<ILoginResponse>(this.loginUrl, credentials).pipe(tap(response => {
       if (response) {
         this.saveToken(response.data.token, response.data.tokenExpiration);
       }

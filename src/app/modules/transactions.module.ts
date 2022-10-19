@@ -5,9 +5,10 @@ import {MatPaginatorModule} from '@angular/material/paginator'
 import {MatSortModule} from '@angular/material/sort'
 import {MatTableModule} from '@angular/material/table'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CurrencyPipe } from '../pipes/currency.pipe';
 
 @NgModule({
-  declarations: [TransactionsComponent],
+  declarations: [TransactionsComponent, CurrencyPipe],
   imports: [
     CommonModule,
     MatPaginatorModule,

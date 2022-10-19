@@ -14,26 +14,17 @@ export class TransactionsService {
   constructor(private http: HttpClient, private authService : AuthService) { }
 
   public getTransactions(): Observable<ITransactionResponse>{
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json',
-    'Authorization': 'Bearer '+ this.authService.getToken()});
-    return this.http.get<ITransactionResponse>(this.transactionsUrl, {headers});
+    return this.http.get<ITransactionResponse>(this.transactionsUrl);
   }
 
   public getTransactionsFiltered(paramsToLoad: [string, any][]): Observable<ITransactionResponse>{
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json',
-    'Authorization': 'Bearer '+ this.authService.getToken()});
     let params = new HttpParams();
     paramsToLoad.forEach(param => {
       if(param[1]){
         params = params.append(param[0], param[1].toString());
       }
       });
-      const httpOptions = {
-        headers: headers,
-        params: params
-      };
-    return this.http.get<ITransactionResponse>(this.transactionsUrl, httpOptions).pipe(tap(
-      response => console.log(response)
-    ));
+      
+    return this.http.get<ITransactionResponse>(this.transactionsUrl, { params });
   }
 }

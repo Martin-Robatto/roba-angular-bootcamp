@@ -7,6 +7,9 @@ import { LoginModule } from './modules/login.module';
 import { TransactionsModule } from './modules/transactions.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TransactionFilterPipe } from './pipes/transaction.filter.pipe';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { CurrencyPipe } from './pipes/currency.pipe';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,13 @@ import { TransactionFilterPipe } from './pipes/transaction.filter.pipe';
     TransactionsModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
