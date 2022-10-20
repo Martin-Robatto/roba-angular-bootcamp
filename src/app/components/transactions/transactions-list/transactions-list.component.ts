@@ -1,16 +1,16 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { IFilters } from 'src/app/interfaces/filters';
 import { ITransaction } from 'src/app/interfaces/transaction';
 import { TransactionsService } from 'src/app/services/transactions.service';
 
 @Component({
-  templateUrl: './transactions.component.html',
-  styleUrls: ['./transactions.component.css']
+  templateUrl: './transactions-list.component.html',
+  styleUrls: ['./transactions-list.component.css']
 })
-export class TransactionsComponent implements OnInit, OnDestroy, OnChanges {
+export class TransactionsListComponent implements OnInit, OnDestroy, OnChanges {
   public transactions: ITransaction[] = [];
   private subscription!: Subscription;
   columnsToDisplay = ['id', 'from_account_id', 'to_account_id', 'currency_name', 

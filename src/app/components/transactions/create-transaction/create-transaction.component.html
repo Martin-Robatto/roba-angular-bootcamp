@@ -1,0 +1,75 @@
+<div class="card" *ngIf="!showReceipt">
+    <div class="card-header">
+        Create transaction
+    </div>
+
+    <div class="card-body">
+        <form novalidate [formGroup]="createTransactionForm">
+            <div class="form-group row mb-2">
+                <label class="col-md-2 col-form-label" for="emailId">Personal Account</label>
+                <div class="col-md-8">
+                    <select class="form-select" formControlName="account_from">
+                        <option *ngFor="let account of userAccounts" [value]="account.id">{{account.id}} - {{account.currency.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <label class="col-md-2 col-form-label" for="toId">Beneficiary account id</label>
+                <div class="col-md-8">
+                    <input class="form-control"
+                           id="toId"
+                           type="number"
+                           min="1"
+                           placeholder="(required)"
+                           formControlName="account_to"
+                           [ngClass]="{'is-invalid': (createTransactionForm.get('account_to')?.touched|| createTransactionForm.get('account_to')?.dirty) && !createTransactionForm.get('account_to')?.valid}">
+                  </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <label class="col-md-2 col-form-label" for="currencyId">Currency</label>
+                <div class="col-md-8">
+                    <select class="form-select" formControlName="currency_name" id="currencyId">
+                        <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <label class="col-md-2 col-form-label"
+                       for="amountId">Amount</label>
+                <div class="col-md-8">
+                  <input class="form-control"
+                         id="amountId"
+                         type="number"
+                         min="1"
+                         placeholder="(required)"
+                         formControlName="amount"
+                         [ngClass]="{'is-invalid': (createTransactionForm.get('amount')?.touched|| createTransactionForm.get('amount')?.dirty) && !createTransactionForm.get('amount')?.valid}">
+                </div>
+              </div>
+
+              <div class="form-group row mb-2">
+                <label class="col-md-2 col-form-label"
+                       for="referenceId">Reference</label>
+                <div class="col-md-8">
+                  <input class="form-control"
+                         id="referenceId"
+                         type="text"
+                         placeholder="(optional)"
+                         formControlName="description"
+                         [ngClass]="{'is-invalid': (createTransactionForm.get('description')?.touched || createTransactionForm.get('description')?.dirty) && !createTransactionForm.get('description')?.valid}">
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-success" (click)="saveTransaction()">Confirm</button>
+                <button type="button" class="btn btn-warning ms-3" (click)="resetForm()">Reset</button>
+              </div>
+        </form>
+    </div>
+</div>
+
+<app-receipt *ngIf="showReceipt" (notify)='closeReceipt()' [transactionData]="receiptData"></app-receipt>
+
+
