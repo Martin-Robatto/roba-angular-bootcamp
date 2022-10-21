@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TransactionFilterPipe } from './pipes/transaction.filter.pipe';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from "ngx-ui-loader";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,10 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
     AppRoutingModule,
     LoginModule,
     TransactionsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxUiLoaderModule,
+    NgxUiLoaderRouterModule.forRoot({showForeground: true}),
+    NgxUiLoaderHttpModule
   ],
   providers: [
     {

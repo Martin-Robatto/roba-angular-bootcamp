@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CurrencyPipe } from '../pipes/currency.pipe';
 import { CreateTransactionComponent } from '../components/transactions/create-transaction/create-transaction.component';
 import { ReceiptComponent } from '../components/transactions/receipt/receipt.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [TransactionsListComponent, CurrencyPipe, CreateTransactionComponent, ReceiptComponent],
@@ -17,7 +18,8 @@ import { ReceiptComponent } from '../components/transactions/receipt/receipt.com
     MatSortModule,
     MatTableModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgxMaskModule.forRoot()
   ]
 })
 export class TransactionsModule { }

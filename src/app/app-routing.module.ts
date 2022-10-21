@@ -6,6 +6,7 @@ import { CreateTransactionComponent } from './components/transactions/create-tra
 import { TransactionsListComponent } from './components/transactions/transactions-list/transactions-list.component';
 import { AuthGuard } from './guards/auth-guard.guard';
 
+
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  
 })
 export class AppRoutingModule { }

@@ -1,11 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { getSafePropertyAccessString } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, throwError } from 'rxjs';
+import { IRates } from 'src/app/interfaces/rates';
 import { ICreateTransaction, ICreateTransactionResponse } from 'src/app/interfaces/transaction';
 import { IUserAccount } from 'src/app/interfaces/userAccount';
 import { AccountsService } from 'src/app/services/accounts.service';
+import { RatesService } from 'src/app/services/rates.service';
 import { TransactionsService } from 'src/app/services/transactions.service';
+import { positiveNumberValidator } from 'src/app/validators/positiveNumber.validator';
 
 @Component({
   selector: 'app-create-transaction',
@@ -20,16 +24,17 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
   public currencies: string[] = ['USD', 'URU', 'EU'];
   public showReceipt: boolean = false;
   public receiptData!: ICreateTransactionResponse;
+  public rates!: IRates;
 
-  constructor(private formBuilder: FormBuilder, private accountsService: AccountsService, private transactionsService: TransactionsService) { }
+  constructor(private formBuilder: FormBuilder, private accountsService: AccountsService, private transactionsService: TransactionsService, private ratesService: RatesService) { }
 
   ngOnInit(): void {
     this.createTransactionForm = this.formBuilder.group({
-      account_from: ['', Validators.required],
-      account_to: ['', Validators.required],
-      amount: ['', Validators.required],
-      currency_name: ['', Validators.required],
-      description: ['', Validators.maxLength(128)]
+      account_from: ['', [Validators.required, positiveNumberValidator]],
+      account_to: ['', [Validators.required, positiveNumberValidator]],
+      amount: ['', [Validators.required, positiveNumberValidator]],
+      currency_name: ['', [Validators.required]],
+      description: ['', [Validators.maxLength(128)]]
     });
     this.getUserAccounts();
   }
@@ -65,17 +70,19 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
   }
 
   saveTransaction(): void {
-    if (!this.createTransactionForm.errors) {
-      let values = this.createTransactionForm.value;
-      values.account_from = Number(values.account_from);
-      console.log(values);
-      this.validateInputs(values);
+    let values = this.createTransactionForm.value;
+    values.account_from = Number(values.account_from);
+    console.log(this.createTransactionForm.value.amount);
+    if (this.createTransactionForm.valid) {
+
       if (confirm("¿Confirm transaction?")) {
         this.transactionsService.postTransaction(values).subscribe(
           next => this.displayReceipt(next),
           error => this.handleError(error),
         );
       }
+    }else{
+      alert('There are some input errors');
     }
   }
 
@@ -84,19 +91,17 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
     this.showReceipt = !this.showReceipt
   }
 
-  validateInputs(values: ICreateTransaction): void {
-    if (isNaN(Number(values.account_from)) || Number(values.account_from) < 1) {
-      throw new Error("Invalid from account id");
-    }
-    if (!values.account_to || Number(values.account_to) < 1) {
-      throw new Error("Invalid to account id");
-    }
-    if (Number(values.amount) < 1) {
-      throw new Error("Invalid amount");
-    }
-    if(values.description && values.description.length > 128){
-      throw new Error("Invalid reference length");
-    }
-    this.resetForm();
-  }
+  // calculateConversion(currency_name: string, accountFromId : number): string {
+  //   if(this.userAccounts.find(account => accountFromId === Number(account.id))?.currency.name !== currency_name){
+  //     this.getRates();
+      
+  //   }
+  // }
+
+  // getRates(): void {
+  //   this.subscription = this.ratesService.getRates().subscribe(
+  //     next => this.rates = next,
+  //     error => this.handleError(error),
+  //   )
+  // }
 }
