@@ -8,7 +8,7 @@ import { IRates } from '../interfaces/rates';
   providedIn: 'root'
 })
 export class RatesService {
-  private ratesUrl = `${environment.december_api}/rates`;
+  private ratesUrl = `${environment.december_api}/transactions/rates`;
 
   constructor(private http: HttpClient) { }
 

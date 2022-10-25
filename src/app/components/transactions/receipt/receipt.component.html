@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card m-3">
     <div class="card-header">
         Receipt
     </div>
@@ -16,6 +16,14 @@
         <p>{{transactionData.data.amount}}</p>
         <label class="col-md-2 col-form-label">Date: </label>
         <p>{{transactionData.data.createdAt | date: 'MM/dd/YYYY'}}</p>
+        <label class="col-md-2 col-form-label">Amount substracted from origin account: </label>
+        <p>{{amountToSubstract | number : '1.2-2'}}</p>
+        <label class="col-md-2 col-form-label">Actual rates: </label>
+        <br/>
+        <label class="col-md-2 col-form-label">USD </label>
+        <p>{{rates.data.usd | number : '1.2-2'}}</p>
+        <label class="col-md-2 col-form-label">EU </label>
+        <p>{{rates.data.eu | number : '1.2-2'}}</p>
     </div>
     <div class="card-footer">
         <button type="button" class="btn btn-success" (click)="closeReceipt()">Close</button>

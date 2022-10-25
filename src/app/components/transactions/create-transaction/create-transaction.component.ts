@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { getSafePropertyAccessString } from '@angular/compiler';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { IRates } from 'src/app/interfaces/rates';
@@ -24,9 +24,11 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
   public currencies: string[] = ['USD', 'URU', 'EU'];
   public showReceipt: boolean = false;
   public receiptData!: ICreateTransactionResponse;
+  public amountToSubstract!: string;
   public rates!: IRates;
 
-  constructor(private formBuilder: FormBuilder, private accountsService: AccountsService, private transactionsService: TransactionsService, private ratesService: RatesService) { }
+  constructor(private formBuilder: FormBuilder, private accountsService: AccountsService, private transactionsService: TransactionsService, 
+    private ratesService: RatesService) { }
 
   ngOnInit(): void {
     this.createTransactionForm = this.formBuilder.group({
@@ -37,6 +39,7 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
       description: ['', [Validators.maxLength(128)]]
     });
     this.getUserAccounts();
+    this.getRates();
   }
 
   ngOnDestroy(): void {
@@ -67,15 +70,15 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
 
   closeReceipt() {
     this.showReceipt = !this.showReceipt;
+    this.createTransactionForm.reset();
   }
 
   saveTransaction(): void {
     let values = this.createTransactionForm.value;
     values.account_from = Number(values.account_from);
-    console.log(this.createTransactionForm.value.amount);
     if (this.createTransactionForm.valid) {
-
       if (confirm("¿Confirm transaction?")) {
+      this.amountToSubstract = this.calculateConversion(values.currency_name, values.account_from, values.amount);
         this.transactionsService.postTransaction(values).subscribe(
           next => this.displayReceipt(next),
           error => this.handleError(error),
@@ -91,17 +94,34 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
     this.showReceipt = !this.showReceipt
   }
 
-  // calculateConversion(currency_name: string, accountFromId : number): string {
-  //   if(this.userAccounts.find(account => accountFromId === Number(account.id))?.currency.name !== currency_name){
-  //     this.getRates();
-      
-  //   }
-  // }
+  calculateConversion(currency_name: string, accountFromId : number, amount: string): string {
+    let amountToSubstract: number = Number(amount);
+    let account = this.userAccounts.find(account => accountFromId === Number(account.id));
+    if(account?.currency.name !== currency_name){
+      if(currency_name === 'USD'){
+        let amountParsed = Number(amount);
+        amountToSubstract = (amountParsed * this.rates.data.usd);
+      }
+      if(currency_name === 'EU'){
+        let amount2 = Number(amount);
+        amountToSubstract = (amount2 * this.rates.data.eu);
+      }
+      if(account?.currency.name === 'USD'){
+        amountToSubstract = amountToSubstract / this.rates.data.usd;
+      }
+      if(account?.currency.name === 'EU'){
+        amountToSubstract = amountToSubstract / this.rates.data.eu;
+      }
+    }else{
+      amountToSubstract = Number(amount);
+    }
+    return String(amountToSubstract);
+  }
 
-  // getRates(): void {
-  //   this.subscription = this.ratesService.getRates().subscribe(
-  //     next => this.rates = next,
-  //     error => this.handleError(error),
-  //   )
-  // }
+  getRates(): void {
+    this.subscription = this.ratesService.getRates().subscribe(
+      next => this.rates = next,
+      error => this.handleError(error),
+    )
+  }
 }

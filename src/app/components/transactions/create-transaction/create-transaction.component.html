@@ -75,6 +75,7 @@
     </div>
 </div>
 
-<app-receipt *ngIf="showReceipt" (notify)='closeReceipt()' [transactionData]="receiptData"></app-receipt>
+<app-receipt *ngIf="showReceipt" (notify)='closeReceipt()' [transactionData]="receiptData" [amountToSubstract]="amountToSubstract" 
+[rates]="rates"></app-receipt>
 
 
