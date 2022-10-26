@@ -36,7 +36,8 @@
                  id="from-account-id"
                  type="number"
                  placeholder=""
-                 formControlName="from_account_id" min="1">
+                 formControlName="from_account_id" min="1"
+                 [ngClass]="{'is-invalid': (filtersForm.get('from_account_id')?.touched || filtersForm.get('from_account_id')?.dirty) && !filtersForm.get('from_account_id')?.valid}">
         </div>
       </div>
 
@@ -48,7 +49,8 @@
                  id="to-account-id"
                  type="number"
                  placeholder=""
-                 formControlName="to_account_id" min="1">
+                 formControlName="to_account_id" min="1"
+                 [ngClass]="{'is-invalid': (filtersForm.get('to_account_id')?.touched || filtersForm.get('to_account_id')?.dirty) && !filtersForm.get('to_account_id')?.valid}">
         </div>
       </div>
 
@@ -60,7 +62,8 @@
                  id="pageId"
                  type="number"
                  placeholder=""
-                 formControlName="page" min="1">
+                 formControlName="page" min="1"
+                 [ngClass]="{'is-invalid': (filtersForm.get('page')?.touched || filtersForm.get('page')?.dirty) && !filtersForm.get('page')?.valid}">
         </div>
       </div>
 
@@ -72,7 +75,8 @@
                  id="pageSizeId"
                  type="number"
                  placeholder=""
-                 formControlName="page_size" min="1">
+                 formControlName="page_size" min="1"
+                 [ngClass]="{'is-invalid': (filtersForm.get('page_size')?.touched || filtersForm.get('page_size')?.dirty) && !filtersForm.get('page_size')?.valid}">
         </div>
       </div>
 
@@ -98,6 +102,12 @@
       </div>
       <button type="button" class="btn btn-primary" (click)="applyFilters()">Apply</button>
       <button type="button" class="btn btn-warning" (click)="resetForm()">Reset</button>
+      <div class="alert alert-danger m-3" role="alert" *ngIf="displayErrorMessage">
+        {{errorMessage}}
+        <div class="float-right mt-2">
+          <button type="button" class="btn btn-danger" (click)="closeErrorDisplay()">Close</button>
+        </div>
+      </div>
     </form>
   </div>
 </div>

@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  december_api: 'https://decemberbank.inhouse.decemberlabs.com/api',
+  production: true,
 };

@@ -19,6 +19,8 @@ export class TransactionsListComponent implements OnInit, OnDestroy {
   public showFilters: boolean = false;
   filtersForm!: FormGroup;
   interval!: NodeJS.Timer;
+  errorMessage!: string;
+  displayErrorMessage!: boolean;
 
   constructor(private transactionsService: TransactionsService, private formBuilder: FormBuilder) {   }
   
@@ -31,6 +33,7 @@ export class TransactionsListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.populateTable();
+    this.displayErrorMessage = false;
 
     this.interval = setInterval(() => {
       this.populateTable();
@@ -49,14 +52,9 @@ export class TransactionsListComponent implements OnInit, OnDestroy {
   }
 
   handleError(err: HttpErrorResponse): Observable<never> {
-    let errorMessage = '';
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = `An error occurred: ${err.error.message}`;
-    } else {
-      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
-    }
-    alert(errorMessage);
-    return throwError(() => errorMessage);
+    this.errorMessage = `${err.error.errors}`;
+      this.displayErrorMessage = true;
+    return throwError(() => this.errorMessage);
   }
 
   setShowFilters(): void{
@@ -67,7 +65,7 @@ export class TransactionsListComponent implements OnInit, OnDestroy {
   }
 
   applyFilters(): void {
-    if(!this.filtersForm.pristine && !this.filtersForm.errors){
+    if(this.filtersForm.valid){
       const values : IFilters = this.filtersForm.value;
       if(values.from !== null){
         values.from = new Date(values.from).toISOString();
@@ -81,7 +79,8 @@ export class TransactionsListComponent implements OnInit, OnDestroy {
         error => this.handleError(error),
       );
     }else{
-      alert('There are some inputs errors');
+      this.displayErrorMessage = true;
+      this.errorMessage = 'Filtros invalidos'
     }
   }
 
@@ -94,5 +93,9 @@ export class TransactionsListComponent implements OnInit, OnDestroy {
 
   resetForm(): void {
     this.filtersForm.reset();
+  }
+
+  closeErrorDisplay(): void{
+    this.displayErrorMessage = false;
   }
 }

@@ -26,6 +26,8 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
   public receiptData!: ICreateTransactionResponse;
   public amountToSubstract!: string;
   public rates!: IRates;
+  errorMessage!: string;
+  displayErrorMessage!: boolean;
 
   constructor(private formBuilder: FormBuilder, private accountsService: AccountsService, private transactionsService: TransactionsService, 
     private ratesService: RatesService) { }
@@ -38,6 +40,7 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
       currency_name: ['', [Validators.required]],
       description: ['', [Validators.maxLength(128)]]
     });
+    this.displayErrorMessage = false;
     this.getUserAccounts();
     this.getRates();
   }
@@ -58,14 +61,9 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
   }
 
   handleError(err: HttpErrorResponse): Observable<never> {
-    let errorMessage = '';
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = `An error occurred: ${err.error.message}`;
-    } else {
-      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
-    }
-    alert(errorMessage);
-    return throwError(() => errorMessage);
+    this.errorMessage = `${err.error.errors}`;
+      this.displayErrorMessage = true;
+    return throwError(() => this.errorMessage);
   }
 
   closeReceipt() {
@@ -123,5 +121,9 @@ export class CreateTransactionComponent implements OnInit, OnDestroy {
       next => this.rates = next,
       error => this.handleError(error),
     )
+  }
+
+  closeErrorDisplay(): void{
+    this.displayErrorMessage = false;
   }
 }

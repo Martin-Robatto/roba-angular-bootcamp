@@ -9,6 +9,13 @@ import { CurrencyPipe } from '../pipes/currency.pipe';
 import { CreateTransactionComponent } from '../components/transactions/create-transaction/create-transaction.component';
 import { ReceiptComponent } from '../components/transactions/receipt/receipt.component';
 import { NgxMaskModule } from 'ngx-mask';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../guards/auth-guard.guard';
+
+const routes: Routes = [
+  {path: 'transaction', component: CreateTransactionComponent, canActivate: [AuthGuard]},
+  {path: '', component: TransactionsListComponent, canActivate: [AuthGuard]},
+];
 
 @NgModule({
   declarations: [TransactionsListComponent, CurrencyPipe, CreateTransactionComponent, ReceiptComponent],
@@ -19,7 +26,9 @@ import { NgxMaskModule } from 'ngx-mask';
     MatTableModule,
     ReactiveFormsModule,
     FormsModule,
-    NgxMaskModule.forRoot()
-  ]
+    NgxMaskModule.forRoot(),
+    RouterModule.forChild(routes)
+  ],
+  exports: [RouterModule]
 })
 export class TransactionsModule { }

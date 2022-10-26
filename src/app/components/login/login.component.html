@@ -42,8 +42,15 @@
             <button class="btn btn-primary" (click)="loginUser()">Submit</button>
           </div>
           <div>
-            <button type="button" class="btn btn-danger mt-5" (click)="logout()">Log out</button>
+            <button type="button" class="btn btn-danger mt-2" (click)="logout()">Log out</button>
           </div>
       </form>
     </div>
+</div>
+
+<div class="alert alert-danger m-3" role="alert" *ngIf="displayErrorMessage">
+  {{errorMessage}}
+  <div class="float-right mt-2">
+    <button type="button" class="btn btn-danger" (click)="closeErrorDisplay">Close</button>
+  </div>
 </div>
