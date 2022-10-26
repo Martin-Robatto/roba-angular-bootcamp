@@ -2,8 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ITransactionResponse } from '../interfaces/transaction';
-import { AuthService } from './auth.service';
+import { ICreateTransaction, ICreateTransactionResponse, ITransaction, ITransactionResponse } from '../interfaces/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ import { AuthService } from './auth.service';
 export class TransactionsService {
   private transactionsUrl = `${environment.december_api}/transactions`;
   
-  constructor(private http: HttpClient, private authService : AuthService) { }
+  constructor(private http: HttpClient) { }
 
   public getTransactions(): Observable<ITransactionResponse>{
     return this.http.get<ITransactionResponse>(this.transactionsUrl);
@@ -26,5 +25,11 @@ export class TransactionsService {
       });
       
     return this.http.get<ITransactionResponse>(this.transactionsUrl, { params });
+  }
+
+  public postTransaction(transaction: ICreateTransaction): Observable<any>{
+    return this.http.post(this.transactionsUrl, transaction).pipe(tap(
+      data => console.log(data)
+    ));
   }
 }

@@ -1,0 +1,34 @@
+<div class="card m-3">
+    <div class="card-header">
+        Receipt
+    </div>
+
+    <div class="card-body">
+        <label class="col-md-2 col-form-label">Transaction id:</label>
+        <p>{{transactionData.data.id}}</p>
+        <label class="col-md-2 col-form-label">From account id: </label>
+        <p>{{transactionData.data.from_account_id}}</p>
+        <label class="col-md-2 col-form-label">To account id: </label>
+        <p>{{transactionData.data.to_account_id}}</p>
+        <label class="col-md-2 col-form-label">Currency: </label>
+        <p>{{transactionData.data.currency_name}}</p>
+        <label class="col-md-2 col-form-label">Total amount: </label>
+        <p>{{transactionData.data.amount}}</p>
+        <label class="col-md-2 col-form-label">Date: </label>
+        <p>{{transactionData.data.createdAt | date: 'MM/dd/YYYY'}}</p>
+        <label class="col-md-2 col-form-label">Amount substracted from origin account: </label>
+        <p>{{amountToSubstract | number : '1.2-2'}}</p>
+        <label class="col-md-2 col-form-label">Actual rates: </label>
+        <br/>
+        <label class="col-md-2 col-form-label">USD </label>
+        <p>{{rates.data.usd | number : '1.2-2'}}</p>
+        <label class="col-md-2 col-form-label">EU </label>
+        <p>{{rates.data.eu | number : '1.2-2'}}</p>
+    </div>
+    <div class="card-footer">
+        <button type="button" class="btn btn-success" (click)="closeReceipt()">Close</button>
+    </div>
+    
+</div>
+
+

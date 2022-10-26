@@ -1,5 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-light mt-2" style="background-color: #e3f2fd;">
-  <a class="navbar-brand" [routerLink]="['/home']">Navigation</a>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand" [routerLink]="['/home']">
+    <img src="../assets/d_logo.png" class="ms-3" width="50" height="50">
+  </a>
+  <a class="navbar-brand ms-4" [routerLink]="['/home']">Navigation</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -15,8 +18,12 @@
       <li class="nav-item">
         <a class="nav-link" [routerLink]="['/transactions']">Transactions</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/transactions/transaction']">Create Transaction</a>
+      </li>
     </ul>
   </div>
 </nav>
 
+<ngx-ui-loader [fgsType]="SPINNER.threeBounce"></ngx-ui-loader>
 <router-outlet></router-outlet>

@@ -16,23 +16,15 @@ export class AuthInterceptorService implements HttpInterceptor {
     let request = req;
 
     if (token) {
-      request = req.clone({
+      req = req.clone({
         setHeaders: {
-          authorization: `Bearer ${token}`
-        }
+          'Content-Type' : 'application/json; charset=utf-8',
+          'Accept'       : 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
-    } else {
-      alert('No token provided');
     }
 
-    return next.handle(request).pipe(
-      catchError(err => {
-        if (err.status === 401) {
-          this.router.navigateByUrl('/login');
-        }
-        this.authService.logout();
-        alert('Login error');
-        return throwError(err);
-      }))
+    return next.handle(req);
   }
 }

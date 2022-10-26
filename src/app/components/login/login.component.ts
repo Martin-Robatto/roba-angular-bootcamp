@@ -13,6 +13,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   login!: ILoginForm;
   subscription!: Subscription;
+  errorMessage!: string;
+  displayErrorMessage!: boolean;
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService) { }
 
@@ -21,6 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+    this.displayErrorMessage = false;
   }
 
   ngOnDestroy(): void {
@@ -46,18 +49,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   handleError(err: HttpErrorResponse): Observable<never> {
-    let errorMessage = '';
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = `An error occurred: ${err.error.message}`;
-    } else {
-      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
-    }
-    alert(errorMessage);
-    return throwError(() => errorMessage);
+      this.errorMessage = `${err.error.errors}`;
+      this.displayErrorMessage = true;
+    return throwError(() => this.errorMessage);
   }
 
   handleLogin(): void{
     alert('Logged in successfully!');
     this.loginForm.reset();
+  }
+
+  closeErrorDisplay(): void{
+    this.displayErrorMessage = !this.displayErrorMessage;
   }
 }
